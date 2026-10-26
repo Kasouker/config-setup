@@ -55,12 +55,6 @@ if ! command -v lazygit >/dev/null; then
 	rm -rf "$tmp"
 fi
 
-step "spotify_player"
-if ! command -v spotify_player >/dev/null; then
-	mkdir -p ~/.local/bin
-	curl -sL https://github.com/aome510/spotify-player/releases/latest/download/spotify_player-x86_64-unknown-linux-gnu.tar.gz | tar -xz -C ~/.local/bin spotify_player
-fi
-
 step "Node (nvm) et paquets npm globaux"
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] || curl -so- https://raw.githubusercontent.com/nvm-sh/nvm/master/install.sh | PROFILE=/dev/null bash

@@ -22,7 +22,7 @@ Le script peut être relancé sans risque : il met à jour ce qui est déjà là
 | Quoi | Où |
 |---|---|
 | zsh, neovim, fzf, eza, bat, ripgrep, fd, yazi, zoxide, tmux, pipx, gcc/make, zsh-autosuggestions, zsh-syntax-highlighting… | apt |
-| starship, lazygit, spotify_player, nvm + Node LTS (typescript, pnpm, codex), Claude Code | leurs sources officielles |
+| starship, lazygit, nvm + Node LTS (typescript, pnpm, codex), Claude Code | leurs sources officielles |
 | [nvim-config](https://github.com/Kasouker/nvim-config), [zsh-config](https://github.com/Kasouker/zsh-config), [starship-config](https://github.com/Kasouker/starship-config) | `~/.config/nvim`, `~/.config/zsh`, `~/.config/starship` |
 | Plugins Neovim (versions de `lazy-lock.json`) et serveurs Mason (clangd, lua_ls, pyright, ts, html, css, jdtls, stylua) | Neovim |
 | WezTerm, [wezterm-config](https://github.com/Kasouker/wezterm-config), [logtime.wezterm](https://github.com/Kasouker/logtime.wezterm), police IosevkaTerm Nerd Font | Linux : apt, `~/.config/wezterm`, `~/Projet_Perso`, `~/.local/share/fonts` — WSL : les mêmes, côté Windows (`%USERPROFILE%`) |
