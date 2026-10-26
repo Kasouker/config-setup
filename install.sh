@@ -1,9 +1,12 @@
 #!/usr/bin/env bash
-# install.sh : remet toute la config en place sur une machine Windows + WSL (Ubuntu).
-# À lancer depuis WSL, après `gh auth login`. Peut être relancé sans risque : ce qui est déjà là est mis à jour.
+# install.sh : remet toute la config en place, sur Linux (Ubuntu/Debian) ou sur Windows + WSL.
+# À lancer depuis Linux ou WSL, après `gh auth login`. Peut être relancé sans risque : ce qui est déjà là est mis à jour.
 set -euo pipefail
 
 GH_USER="Kasouker"
+
+# Sous WSL, WezTerm et la police vont côté Windows
+if grep -qi microsoft /proc/version; then IS_WSL=1; else IS_WSL=0; fi
 
 step() { printf '\n\033[1;33m==> %s\033[0m\n' "$*"; }
 
@@ -30,11 +33,14 @@ link() {
 # --- 1. Paquets apt ---
 step "Paquets apt"
 sudo apt-get update
-sudo apt-get install -y \
-	zsh git gh curl wget unzip tar build-essential make \
-	neovim fzf eza bat ripgrep fd-find yazi zoxide tree tmux xclip \
+# Un paquet absent de la distribution ne bloque pas les autres
+for p in \
+	zsh git gh curl wget unzip tar build-essential make fontconfig gnupg \
+	neovim fzf eza bat ripgrep fd-find yazi zoxide tree tmux xclip wl-clipboard \
 	pipx python3-venv \
-	zsh-autosuggestions zsh-syntax-highlighting
+	zsh-autosuggestions zsh-syntax-highlighting; do
+	sudo apt-get install -y "$p" || echo "!! paquet introuvable : $p"
+done
 
 # --- 2. Outils hors apt ---
 step "Starship"
@@ -81,30 +87,48 @@ link ~/.config/starship/starship.toml ~/.config/starship.toml
 step "Zsh comme shell par défaut"
 [ "$(getent passwd "$USER" | cut -d: -f7)" = "$(command -v zsh)" ] || sudo chsh -s "$(command -v zsh)" "$USER"
 
-# --- 4. Côté Windows : WezTerm, sa config, le plugin logtime et la police ---
-step "Côté Windows"
-WIN_HOME=$(wslpath "$(cmd.exe /c 'echo %USERPROFILE%' 2>/dev/null | tr -d '\r')")
-mkdir -p "$WIN_HOME/.config" "$WIN_HOME/Projet_Perso"
-clone_or_pull wezterm-config "$WIN_HOME/.config/wezterm"
+# --- 4. WezTerm, sa config, le plugin logtime et la police ---
+step "WezTerm"
+if [ "$IS_WSL" = 1 ]; then
+	TERM_HOME=$(wslpath "$(cmd.exe /c 'echo %USERPROFILE%' 2>/dev/null | tr -d '\r')")
+	FONT_DIR="$TERM_HOME/AppData/Local/Microsoft/Windows/Fonts"
+	[ -e "/mnt/c/Program Files/WezTerm/wezterm.exe" ] ||
+		winget.exe install --id wez.wezterm -e --accept-source-agreements --accept-package-agreements
+else
+	TERM_HOME=$HOME
+	FONT_DIR="$HOME/.local/share/fonts"
+	if ! command -v wezterm >/dev/null; then
+		curl -fsSL https://apt.fury.io/wez/gpg.key | sudo gpg --yes --dearmor -o /usr/share/keyrings/wezterm-fury.gpg
+		sudo chmod 644 /usr/share/keyrings/wezterm-fury.gpg
+		echo 'deb [signed-by=/usr/share/keyrings/wezterm-fury.gpg] https://apt.fury.io/wez/ * *' |
+			sudo tee /etc/apt/sources.list.d/wezterm.list >/dev/null
+		sudo apt-get update
+		sudo apt-get install -y wezterm
+	fi
+fi
+
+mkdir -p "$TERM_HOME/.config" "$TERM_HOME/Projet_Perso"
+clone_or_pull wezterm-config "$TERM_HOME/.config/wezterm"
 # Le plugin est chargé depuis ce dossier par logtime_plugin.lua
-[ -d "$WIN_HOME/Projet_Perso/logtime.wezterm" ] || gh repo clone "$GH_USER/logtime.wezterm" "$WIN_HOME/Projet_Perso/logtime.wezterm"
+[ -d "$TERM_HOME/Projet_Perso/logtime.wezterm" ] || gh repo clone "$GH_USER/logtime.wezterm" "$TERM_HOME/Projet_Perso/logtime.wezterm"
 
-[ -e "/mnt/c/Program Files/WezTerm/wezterm.exe" ] ||
-	winget.exe install --id wez.wezterm -e --accept-source-agreements --accept-package-agreements
-
-# Police IosevkaTerm Nerd Font, installée pour l'utilisateur Windows (pas besoin d'être admin)
-FONT_DIR="$WIN_HOME/AppData/Local/Microsoft/Windows/Fonts"
+step "Police IosevkaTerm Nerd Font"
 if ! ls "$FONT_DIR"/IosevkaTermNerdFont-* >/dev/null 2>&1; then
 	tmp=$(mktemp -d)
 	curl -sL https://github.com/ryanoasis/nerd-fonts/releases/latest/download/IosevkaTerm.zip -o "$tmp/font.zip"
 	unzip -q "$tmp/font.zip" 'IosevkaTermNerdFont-*.ttf' -d "$tmp/ttf"
 	mkdir -p "$FONT_DIR"
-	for f in "$tmp"/ttf/*.ttf; do
-		name=$(basename "$f")
-		cp "$f" "$FONT_DIR/"
-		reg.exe add 'HKCU\Software\Microsoft\Windows NT\CurrentVersion\Fonts' \
-			/v "${name%.ttf} (TrueType)" /t REG_SZ /d "$(wslpath -w "$FONT_DIR/$name")" /f >/dev/null
-	done
+	cp "$tmp"/ttf/*.ttf "$FONT_DIR/"
+	if [ "$IS_WSL" = 1 ]; then
+		# Police installée pour l'utilisateur Windows (pas besoin d'être admin)
+		for f in "$tmp"/ttf/*.ttf; do
+			name=$(basename "$f")
+			reg.exe add 'HKCU\Software\Microsoft\Windows NT\CurrentVersion\Fonts' \
+				/v "${name%.ttf} (TrueType)" /t REG_SZ /d "$(wslpath -w "$FONT_DIR/$name")" /f >/dev/null
+		done
+	else
+		fc-cache -f "$FONT_DIR"
+	fi
 	rm -rf "$tmp"
 fi
 
@@ -115,4 +139,4 @@ nvim --headless "+Lazy! restore" +qa
 nvim --headless "+Lazy! load nvim-lspconfig" \
 	"+MasonInstall clangd css-lsp html-lsp jdtls lua-language-server pyright stylua typescript-language-server" +qa
 
-step "Terminé : ouvre WezTerm, tout est en place."
+step "Terminé : déconnecte-toi puis reconnecte-toi (pour zsh), et ouvre WezTerm."
