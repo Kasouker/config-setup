@@ -4,13 +4,17 @@ Remet toute ma config en place en une commande, sur Linux ou sur Windows avec WS
 
 ## Installation
 
+1. Installer gh (l'outil GitHub) dans `~/.local/bin` :
+
 ```sh
-# 1. gh, dans ~/.local/bin
 mkdir -p ~/.local/bin && cd /tmp
 curl -sL "$(curl -s https://api.github.com/repos/cli/cli/releases/latest | grep -o 'https://[^"]*linux_amd64\.tar\.gz' | head -1)" | tar -xz
 mv gh_*_linux_amd64/bin/gh ~/.local/bin/ && export PATH="$HOME/.local/bin:$PATH"
+```
 
-# 2. Connexion à GitHub (le script télécharge les outils avec gh), puis installation
+2. Se connecter à GitHub (le script télécharge les outils avec gh), puis lancer l'installation :
+
+```sh
 gh auth login
 gh repo clone Kasouker/config-setup ~/config-setup && ~/config-setup/install.sh
 ```
