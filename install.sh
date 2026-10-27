@@ -10,8 +10,8 @@ OPT="$HOME/.local/opt"
 mkdir -p "$BIN" "$OPT"
 export PATH="$BIN:$PATH"
 
-# Sous WSL, WezTerm et la police vont côté Windows
-if grep -qi microsoft /proc/version; then IS_WSL=1; else IS_WSL=0; fi
+# Sous WSL, WezTerm et la police vont côté Windows (seulement si Windows répond : sinon, comme sous Linux)
+if grep -qi microsoft /proc/version && command -v cmd.exe >/dev/null; then IS_WSL=1; else IS_WSL=0; fi
 
 step() { printf '\n\033[1;33m==> %s\033[0m\n' "$*"; }
 warn() { printf '\033[1;31m!! %s\033[0m\n' "$*"; }
