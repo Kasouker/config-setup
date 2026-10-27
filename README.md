@@ -4,10 +4,10 @@ Remet toute ma config en place en une commande, sur Linux ou sur Windows avec WS
 
 ## Installation
 
-Une seule ligne à copier :
+Une seule ligne à copier (elle marche aussi pour mettre à jour : relance-la quand tu veux) :
 
 ```bash
-git clone https://github.com/Kasouker/config-setup.git ~/config-setup && bash ~/config-setup/install.sh
+{ [ -f ~/config-setup/install.sh ] || git clone https://github.com/Kasouker/config-setup.git ~/config-setup; } && git -C ~/config-setup pull -q && bash ~/config-setup/install.sh
 ```
 
 Puis fermer le terminal et ouvrir WezTerm.
