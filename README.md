@@ -28,7 +28,6 @@ Chaque config a son propre `install.sh`, qu'on peut aussi lancer seul (voir son 
 | [nvim-config](https://github.com/Kasouker/nvim-config) | Neovim 0.11.6 (si absent ou trop ancien), ripgrep, lazygit, les plugins |
 | zsh comme shell | `chsh` ; s'il est refusé, une ligne dans `~/.bashrc` lance zsh |
 | [wezterm-config](https://github.com/Kasouker/wezterm-config) | Linux : WezTerm (nightly) et la police IosevkaTerm Nerd Font. WSL : côté Windows (`%USERPROFILE%`), avec winget et la police du compte Windows |
-| [logtime.wezterm](https://github.com/Kasouker/logtime.wezterm) | `~/Projet_Perso/logtime.wezterm` (sous WSL : côté Windows) |
 | Serveurs de langage | clangd, lua_ls, pyright, ts, html, css, jdtls, stylua (Mason, dans Neovim) |
 
 ## Si une partie est déjà installée

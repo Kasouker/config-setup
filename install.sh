@@ -2,7 +2,7 @@
 # install.sh : remet toute la config en place, sur Linux ou sur Windows + WSL, sans sudo.
 # Tout s'installe dans le dossier personnel (~/.local) à partir des versions publiées sur GitHub.
 # Chaque config s'installe avec son propre install.sh (nvim-config, zsh-config, wezterm-config) ; ce script ajoute
-# le reste (gh, zoxide, Node, Claude Code, zsh comme shell, logtime, les serveurs de langage).
+# le reste (gh, zoxide, Node, Claude Code, zsh comme shell, les serveurs de langage).
 # Peut être relancé sans risque : ce qui est déjà là est gardé ou mis à jour.
 set -euo pipefail
 
@@ -90,7 +90,7 @@ if [ -n "$ZSH_BIN" ] && [ "$(readlink -f "$(getent passwd "$USER" | cut -d: -f7)
 	fi
 fi
 
-# --- 4. WezTerm, sa config, la police et le plugin logtime ---
+# --- 4. WezTerm, sa config et la police ---
 if [ "$IS_WSL" = 1 ]; then
 	step "WezTerm et la police (côté Windows)"
 	TERM_HOME=$(wslpath "$(cmd.exe /c 'echo %USERPROFILE%' 2>/dev/null | tr -d '\r')")
@@ -115,16 +115,9 @@ if [ "$IS_WSL" = 1 ]; then
 	fi
 else
 	step "Config WezTerm (WezTerm et la police)"
-	TERM_HOME=$HOME
 	clone_or_pull "$GH_USER/wezterm-config" ~/.config/wezterm
 	bash ~/.config/wezterm/install.sh
 fi
-
-step "logtime"
-# Le plugin est chargé depuis ce dossier par logtime_plugin.lua (sinon depuis GitHub)
-mkdir -p "$TERM_HOME/Projet_Perso"
-[ -d "$TERM_HOME/Projet_Perso/logtime.wezterm" ] ||
-	git clone "https://github.com/$GH_USER/logtime.wezterm.git" "$TERM_HOME/Projet_Perso/logtime.wezterm"
 
 # --- 5. Les serveurs de langage ---
 step "Serveurs de langage (Mason)"
