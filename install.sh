@@ -57,7 +57,7 @@ release_bin() {
 
 # --- 1. Ce qu'il faut déjà avoir (on ne peut pas l'installer sans sudo) ---
 step "Vérification des outils de base"
-for b in git curl tar unzip zsh make cc python3; do
+for b in git curl tar unzip zsh make cc; do
 	have "$b" || warn "$b est absent : demande-le à l'admin de la machine"
 done
 have git && have curl && have tar || { warn "git, curl et tar sont indispensables, arrêt."; exit 1; }
@@ -90,12 +90,6 @@ have lazygit || release_bin jesseduffield/lazygit 'lazygit_*_linux_x86_64.tar.gz
 
 step "Starship"
 have starship || curl -sS https://starship.rs/install.sh | sh -s -- -y -b "$BIN"
-
-step "pipx (pour la norminette)"
-if ! have pipx; then
-	gh release download -R pypa/pipx -p 'pipx.pyz' -O "$BIN/pipx" --clobber
-	chmod +x "$BIN/pipx"
-fi
 
 step "Plugins zsh : autosuggestions et syntax-highlighting"
 clone_or_pull zsh-users/zsh-autosuggestions ~/.local/share/zsh/zsh-autosuggestions

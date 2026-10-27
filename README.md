@@ -32,13 +32,13 @@ Pas besoin de rien enlever avant : le script **saute ce qui est déjà là**.
 
 ## Ce qu'il faut déjà avoir sur la machine
 
-`git`, `curl`, `tar`, `unzip`, `zsh`, `make`, `cc`, `python3`. Le script prévient s'il en manque un (sans sudo, il ne peut pas les installer).
+`git`, `curl`, `tar`, `unzip`, `zsh`, `make`, `cc`. Le script prévient s'il en manque un (sans sudo, il ne peut pas les installer).
 
 ## Ce qu'il installe
 
 | Quoi | Où |
 |---|---|
-| gh, neovim, fzf, eza, bat, ripgrep, fd, yazi, zoxide, lazygit, starship, pipx | `~/.local/bin` (releases GitHub), seulement s'ils sont absents |
+| gh, neovim, fzf, eza, bat, ripgrep, fd, yazi, zoxide, lazygit, starship | `~/.local/bin` (releases GitHub), seulement s'ils sont absents |
 | zsh-autosuggestions, zsh-syntax-highlighting | `~/.local/share/zsh` |
 | nvm + Node LTS (typescript, pnpm, codex), Claude Code | `~/.nvm`, `~/.local` |
 | [nvim-config](https://github.com/Kasouker/nvim-config) (public), [zsh-config](https://github.com/Kasouker/zsh-config), [starship-config](https://github.com/Kasouker/starship-config) | `~/.config/nvim`, `~/.config/zsh`, `~/.config/starship` |
