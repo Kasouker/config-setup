@@ -43,7 +43,7 @@ Pas besoin de rien enlever avant : le script **saute ce qui est déjà là**.
 
 ## Ce qu'il faut déjà avoir sur la machine
 
-`git`, `curl`, `tar`, `unzip`, `zsh`, `make`, `cc`. Le script prévient s'il en manque un (sans sudo, il ne peut pas les installer).
+`git`, `curl`, `tar`, `unzip`, `awk`, `zsh`, `make`, `cc`. Le script prévient s'il en manque un (sans sudo, il ne peut pas les installer).
 
 ## La norminette et le header 42
 

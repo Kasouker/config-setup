@@ -44,10 +44,10 @@ dl() {
 
 # --- 1. Ce qu'il faut déjà avoir (on ne peut pas l'installer sans sudo) ---
 step "Vérification des outils de base"
-for b in git curl tar unzip zsh make cc; do
+for b in git curl tar unzip awk zsh make cc; do
 	have "$b" || warn "$b est absent : demande-le à l'admin de la machine"
 done
-have git && have curl && have tar || { warn "git, curl et tar sont indispensables, arrêt."; exit 1; }
+have git && have curl && have tar && have awk || { warn "git, curl, tar et awk sont indispensables, arrêt."; exit 1; }
 
 # --- 2. Les outils qu'aucune config n'installe ---
 step "gh et zoxide"
