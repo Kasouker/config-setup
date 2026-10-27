@@ -10,7 +10,7 @@ mkdir -p ~/.local/bin && cd /tmp
 curl -sL "$(curl -s https://api.github.com/repos/cli/cli/releases/latest | grep -o 'https://[^"]*linux_amd64\.tar\.gz' | head -1)" | tar -xz
 mv gh_*_linux_amd64/bin/gh ~/.local/bin/ && export PATH="$HOME/.local/bin:$PATH"
 
-# 2. Connexion à GitHub (config-setup, zsh-config et starship-config sont privés), puis installation
+# 2. Connexion à GitHub (le script télécharge les outils avec gh), puis installation
 gh auth login
 gh repo clone Kasouker/config-setup ~/config-setup && ~/config-setup/install.sh
 ```
@@ -29,6 +29,7 @@ Pas besoin de rien enlever avant : le script **saute ce qui est déjà là**.
 - **WezTerm** : gardé s'il est déjà installé (`wezterm` sous Linux, `C:\Program Files\WezTerm` sous Windows). La config est testée avec la **nightly** `20261005` ; avec la version stable `20240203` (celle d'`apt` ou du site), elle devrait marcher mais n'a jamais été testée. Vérifie avec `wezterm --version` et, en cas d'erreur au lancement, installe la nightly.
 - **La police** : gardée si IosevkaTerm Nerd Font est déjà dans tes polices perso (`~/.local/share/fonts`, ou celles de ton compte Windows).
 - **Les configs** : un dossier qui est déjà un clone du dépôt est mis à jour (`git pull`) ; un autre dossier au même endroit est mis de côté (`.avant-install.<date>`).
+- **Ton `~/.zshrc`** : il est remplacé par celui de zsh-config, donc **tes anciens alias ne sont plus chargés**. L'ancien fichier est gardé en `~/.zshrc.avant-install.<date>` : recopie les alias que tu veux garder dans `~/.zshrc.local` (chargé à la fin du nouveau `.zshrc`, jamais envoyé sur GitHub).
 
 ## Ce qu'il faut déjà avoir sur la machine
 
@@ -41,9 +42,9 @@ Pas besoin de rien enlever avant : le script **saute ce qui est déjà là**.
 | gh, neovim, fzf, eza, bat, ripgrep, fd, yazi, zoxide, lazygit, starship | `~/.local/bin` (releases GitHub), seulement s'ils sont absents |
 | zsh-autosuggestions, zsh-syntax-highlighting | `~/.local/share/zsh` |
 | nvm + Node LTS (typescript, pnpm, codex), Claude Code | `~/.nvm`, `~/.local` |
-| [nvim-config](https://github.com/Kasouker/nvim-config) (public), [zsh-config](https://github.com/Kasouker/zsh-config), [starship-config](https://github.com/Kasouker/starship-config) | `~/.config/nvim`, `~/.config/zsh`, `~/.config/starship` |
+| [nvim-config](https://github.com/Kasouker/nvim-config), [zsh-config](https://github.com/Kasouker/zsh-config), [starship-config](https://github.com/Kasouker/starship-config) | `~/.config/nvim`, `~/.config/zsh`, `~/.config/starship` |
 | Plugins Neovim (versions de `lazy-lock.json`) et serveurs Mason (clangd, lua_ls, pyright, ts, html, css, jdtls, stylua) | Neovim |
-| WezTerm (nightly), [wezterm-config](https://github.com/Kasouker/wezterm-config) (public), [logtime.wezterm](https://github.com/Kasouker/logtime.wezterm), police IosevkaTerm Nerd Font | Linux : `~/.local/opt/wezterm`, `~/.config/wezterm`, `~/Projet_Perso`, `~/.local/share/fonts` — WSL : côté Windows (`%USERPROFILE%`) |
+| WezTerm (nightly), [wezterm-config](https://github.com/Kasouker/wezterm-config), [logtime.wezterm](https://github.com/Kasouker/logtime.wezterm), police IosevkaTerm Nerd Font | Linux : `~/.local/opt/wezterm`, `~/.config/wezterm`, `~/Projet_Perso`, `~/.local/share/fonts` — WSL : côté Windows (`%USERPROFILE%`) |
 
 ## La norminette et le header 42
 
@@ -53,4 +54,4 @@ Ils ne font plus partie de nvim-config : ils restent sur la machine où ils sont
 
 Si `chsh` est refusé, le script ajoute à `~/.bashrc` une ligne qui lance zsh.
 
-Les alias de projets (`home`, `Plouf`, `Arbre`…) pointent vers `~/Projet_Perso` sous Linux.
+Les alias propres à une machine (comme les alias de projets) vont dans `~/.zshrc.local`, qui reste sur la machine.
