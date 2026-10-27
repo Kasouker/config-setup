@@ -129,7 +129,14 @@ mkdir -p "$TERM_HOME/Projet_Perso"
 # --- 5. Les serveurs de langage ---
 step "Serveurs de langage (Mason)"
 # Mason n'est chargé qu'à l'ouverture d'un fichier : on charge lspconfig (qui le configure) avant d'installer
+# Les messages (des milliers de lignes de décompression) vont dans un journal
+log="$HOME/.local/state/mason-install.log"
+mkdir -p "$(dirname "$log")"
 nvim --headless "+Lazy! load nvim-lspconfig" \
-	"+MasonInstall clangd css-lsp html-lsp jdtls lua-language-server pyright stylua typescript-language-server" +qa
+	"+MasonInstall clangd css-lsp html-lsp jdtls lua-language-server pyright stylua typescript-language-server" +qa \
+	>"$log" 2>&1 || true
+installed=$(ls "$HOME/.local/share/nvim/mason/packages" 2>/dev/null | wc -l)
+echo "serveurs installés ($installed/8) : $(ls "$HOME/.local/share/nvim/mason/packages" 2>/dev/null | tr '\n' ' ')"
+[ "$installed" -ge 8 ] || warn "il en manque : journal complet dans $log"
 
 step "Terminé : ferme le terminal, puis ouvre WezTerm."
